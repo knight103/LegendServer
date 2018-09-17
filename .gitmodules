@@ -1,0 +1,6 @@
+[submodule "extern/libuv"]
+	path = extern/libuv
+	url = https://github.com/libuv/libuv
+[submodule "extern/log.h"]
+	path = extern/log.h
+	url = https://github.com/thlorenz/log.h

@@ -58,6 +58,18 @@ void on_new_connection(uv_stream_t *server_stream, int status) {
     r = uv_accept((uv_stream_t*)s->_server, (uv_stream_t*)client);
     CHECK(r, "uv_accept失败");
     
+    // 获取客户端信息
+    struct sockaddr sockname, peername;
+    int namelen;
+    
+    namelen = sizeof(sockname);
+    r = uv_tcp_getsockname(client, &sockname, &namelen);
+    CHECK(r, "uv_tcp_getsockname失败");
+    
+    namelen = sizeof(peername);
+    r = uv_tcp_getpeername(client, &peername, &namelen);
+    CHECK(r, "uv_tcp_getpeername失败");
+    
     // 建立连接成功，创建ClientSession
     ClientSession * session = new ClientSession();
     session->_client = client;
@@ -103,5 +115,26 @@ void GameServer::start()
 }
 
 void ClientSession::on_recv(char* data, size_t readn) {
-    log_info("客户端消息: %s \n", data);
+    log_info("客户端消息: %s", data);
+}
+
+void encryptData(void* buff, uint32_t buffLen, uint8_t key){
+    uint8_t *p8 = (uint8_t*)buff;
+    uint32_t xorKey = (uint32_t)key;
+    
+    memset(&((uint8_t*)(&xorKey))[1], (uint8_t)xorKey, 1);
+    memset(&((uint8_t*)(&xorKey))[2], key ^ 53, 2);
+    uint32_t *xorData = (uint32_t*)p8;
+    for (uint32_t i = 0; i < buffLen / 4; i++) {
+        uint32_t tmp = (xorData[i] + 157) ^ xorKey;
+        xorData[i] = tmp;
+        xorKey = tmp ^ 0x70E08121;
+    }
+    
+    if (buffLen % 4 != 0) {
+        uint32_t remainData = 0;
+        memcpy(&remainData, &p8[buffLen / 4 * 4], buffLen % 4);
+        remainData ^= xorKey;
+        memcpy(&p8[buffLen / 4 * 4], &remainData, buffLen % 4);
+    }
 }
