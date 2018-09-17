@@ -9,7 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "log.h"
+#include <iostream>
+#include "Constant.h"
 
 #define CHECK(r, msg) if (r) {                                                       \
 log_error("%s: [%s(%d): %s]\n", msg, uv_err_name((r)), (int) r, uv_strerror((r))); \
@@ -28,10 +29,10 @@ void alloc_cb(uv_handle_t* handle,size_t suggested_size,uv_buf_t* buf) {
 void on_read(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
     if (nread < 0) {
         if (nread == UV_EOF) {
-            log_info("客户端关闭连接");
+            log_info("client close connection");
             
         } else {
-            log_error("读取消息发生错误");
+            log_error("error to read");
         }
         return;
     }
@@ -49,13 +50,13 @@ void on_read(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
 void on_new_connection(uv_stream_t *server_stream, int status) {
     int r;
     
-    GameServer* s = (GameServer*) server_stream->data;
+    GameServer* server = (GameServer*) server_stream->data;
     uv_tcp_t* client = new uv_tcp_t;
     
-    r = uv_tcp_init(s->_loop, client);
+    r = uv_tcp_init(server->loop(), client);
     CHECK(r, "uv_tcp_init失败");
     
-    r = uv_accept((uv_stream_t*)s->_server, (uv_stream_t*)client);
+    r = uv_accept((uv_stream_t*)server->uv_handle(), (uv_stream_t*)client);
     CHECK(r, "uv_accept失败");
     
     // 获取客户端信息
@@ -71,23 +72,22 @@ void on_new_connection(uv_stream_t *server_stream, int status) {
     CHECK(r, "uv_tcp_getpeername失败");
     
     // 建立连接成功，创建ClientSession
-    ClientSession * session = new ClientSession();
-    session->_client = client;
-    client->data = session;
+	ClientSession * session = ClientSession::create(client);
+	server->addClient(session);
     
     r = uv_read_start((uv_stream_t*)client, alloc_cb, on_read);
     CHECK(r, "uv_read_start失败");
     
-    log_info("新客户端连接: %d\n", client->accepted_fd);
+	log_verbose("新客户端连接");
 }
 
 GameServer::GameServer() {
-    _loop = uv_default_loop();
-    _server = new uv_tcp_t;
+	_loop = uv_default_loop();
+    _uv_handle = new uv_tcp_t;
 }
 
 GameServer::~GameServer() {
-    delete _server;
+    delete _uv_handle;
 }
 
 void GameServer::start()
@@ -95,27 +95,48 @@ void GameServer::start()
     int r;
     struct sockaddr_in addr;
     
-    _server->data = this;
+    _uv_handle->data = this;
     
-    r = uv_tcp_init(_loop, _server);
+    r = uv_tcp_init(_loop, _uv_handle);
     CHECK(r, "建立TCP句柄失败\n");
     
     // 绑定地址和端口
     r = uv_ip4_addr(IP, PORT, &addr);
     CHECK(r, "创建端口失败");
     
-    r = uv_tcp_bind(_server, (const struct sockaddr*)&addr, 0);
+    r = uv_tcp_bind(_uv_handle, (const struct sockaddr*)&addr, 0);
     CHECK(r, "uv_tcp_bind失败");
     
-    r = uv_listen((uv_stream_t*)_server, 128, on_new_connection);
+    r = uv_listen((uv_stream_t*)_uv_handle, 128, on_new_connection);
     CHECK(r, "uv_listen失败");
     
-    log_info("开始主循环......");
+	log_verbose("开始主循环......");
     uv_run(_loop, UV_RUN_DEFAULT);
 }
 
+void GameServer::addClient(ClientSession* session) {
+	_clients.push_back(session);
+	session->retain();
+}
+
+ClientSession * ClientSession::create(uv_tcp_t* uv_handle) {
+	ClientSession *sprite = new (std::nothrow) ClientSession();
+	if (sprite && sprite->init(uv_handle))
+	{
+		return sprite;
+	}
+	CC_SAFE_DELETE(sprite);
+	return nullptr;
+}
+
+bool ClientSession::init(uv_tcp_t* uv_handle) {
+	_uv_handler = uv_handle;
+	_uv_handler->data = this;
+	return true;
+}
+
 void ClientSession::on_recv(char* data, size_t readn) {
-    log_info("客户端消息: %s", data);
+	log_verbose("客户端消息: %s", data);
 }
 
 void encryptData(void* buff, uint32_t buffLen, uint8_t key){

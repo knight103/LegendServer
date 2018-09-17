@@ -9,34 +9,44 @@
 #define GameServer_h
 
 #include "uv.h"
+#include "cocos/CCRef.h"
+#include <list>
 
-class GameServer {
-private:
-    const char* IP = "0.0.0.0";
-    const int PORT = 7300;
-    
+class ClientSession;
+
+class GameServer : public Ref {
 public:
-    uv_loop_t *_loop;
-    uv_tcp_t *_server;
-    
-public:
+
+	inline uv_loop_t * loop() { return _loop; }
+	inline uv_tcp_t* uv_handle() { return _uv_handle; }
+
+
+	void addClient(ClientSession* session);
+
     GameServer();
     ~GameServer();
     
     void start();
+
+private:
+	const char* IP = "0.0.0.0";
+	const int PORT = 7300;
+
+	uv_loop_t *_loop;
+	uv_tcp_t *_uv_handle;
+	std::list<ClientSession*> _clients;
 };
 
-class ClientSession {
-    
+class ClientSession : public Ref {
 public:
-    uv_tcp_t *_client;
+	static ClientSession * create(uv_tcp_t* uv_handle);
 
+	bool init(uv_tcp_t* uv_handle);
 public:
-    
-    void close_connection();
-    
     void on_recv(char* data, size_t readn);
-    
+
+private:
+	uv_tcp_t * _uv_handler;
 };
 
 // 数据区分隔标识

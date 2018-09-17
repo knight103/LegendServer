@@ -5,16 +5,27 @@ cmake_minimum_required (VERSION 2.8)
 project (GameServer)
 
 # 头文件搜索目录
+include_directories(src/core)
 include_directories(extern/libuv/include)
-include_directories(extern/log.h)
+include_directories(extern/plog/include)
 
 add_subdirectory(extern/libuv)
 
-# 编译项目内的文件
-add_executable(GameServer 
+set(SRC 
     src/main.cpp
     src/GameServer.h
     src/GameServer.cpp
+    src/core/log.h
+    src/core/log.cpp
+    src/core/Constant.h
+    src/core/cocos/CCAutoreleasePool.h
+    src/core/cocos/CCAutoreleasePool.cpp
+    src/core/cocos/ccMacros.h
+    src/core/cocos/CCRef.h
+    src/core/cocos/CCRef.cpp
 )
+
+# 编译项目内的文件
+add_executable(GameServer ${SRC})
 
 target_link_libraries(GameServer uv_a)
