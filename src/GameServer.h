@@ -14,6 +14,13 @@
 
 class ClientSession;
 
+// 协议结构体
+struct ProtocolHeader {
+    uint16_t Sign;
+    uint16_t DataLen;
+};
+
+
 class GameServer : public Ref {
 public:
 
@@ -43,11 +50,25 @@ public:
 
 	bool init(uv_tcp_t* uv_handle);
 public:
-    void on_recv(char* data, size_t readn);
+    void on_recv(const char* data, size_t readn);
+    
+    void buf_append(const char* data, size_t readn);
+    
+    void buf_pophead(size_t size);
+    
+    void read_protocol();
+    
+private:
+    ClientSession();
 
 private:
+    char* _buffer;
+    ProtocolHeader* _cur_header = nullptr;
 	uv_tcp_t * _uv_handler;
+    uint32_t _cur_readn;
 };
+
+
 
 // 数据区分隔标识
 #define cTcpDataSignFlag    (0xD825)

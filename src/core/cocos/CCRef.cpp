@@ -27,7 +27,8 @@ THE SOFTWARE.
 
 #include "cocos/CCRef.h"
 #include "cocos/CCAutoreleasePool.h"
-#include "cocos/ccMacros.h"
+#include "Constant.h"
+
 
 #if CC_REF_LEAK_DETECTION
 #include <algorithm>    // std::find
@@ -88,13 +89,13 @@ Ref::~Ref()
 
 void Ref::retain()
 {
-    CCASSERT(_referenceCount > 0, "reference count should be greater than 0");
+    ASSERT(_referenceCount > 0, "reference count should be greater than 0");
     ++_referenceCount;
 }
 
 void Ref::release()
 {
-    CCASSERT(_referenceCount > 0, "reference count should be greater than 0");
+    ASSERT(_referenceCount > 0, "reference count should be greater than 0");
     --_referenceCount;
 
     if (_referenceCount == 0)

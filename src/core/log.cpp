@@ -21,6 +21,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "log.h"
+#include <iostream>
 #include <stdio.h>
 #include <stdarg.h>
 

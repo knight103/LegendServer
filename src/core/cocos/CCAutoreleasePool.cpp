@@ -25,7 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 #include "cocos/CCAutoreleasePool.h"
-#include "cocos/ccMacros.h"
 #include "Constant.h"
 
 AutoreleasePool::AutoreleasePool()
