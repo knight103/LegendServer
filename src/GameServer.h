@@ -12,6 +12,11 @@
 #include "cocos/CCRef.h"
 #include <list>
 
+// 接收缓冲区的大小
+#define DEFAULT_RCVBUF_SIZE    (200*1024)
+// 发送缓冲区的大小
+#define DEFAULT_SNDBUF_SIZE    (128*1024)
+
 class ClientSession;
 
 // 协议结构体
@@ -20,13 +25,11 @@ struct ProtocolHeader {
     uint16_t DataLen;
 };
 
-
 class GameServer : public Ref {
 public:
 
 	inline uv_loop_t * loop() { return _loop; }
 	inline uv_tcp_t* uv_handle() { return _uv_handle; }
-
 
 	void addClient(ClientSession* session);
 
@@ -51,24 +54,19 @@ public:
 	bool init(uv_tcp_t* uv_handle);
 public:
     void on_recv(const char* data, size_t readn);
-    
-    void buf_append(const char* data, size_t readn);
-    
-    void buf_pophead(size_t size);
-    
-    void read_protocol();
-    
+
+	void on_data_read(const char* data, size_t size);
 private:
     ClientSession();
+	~ClientSession();
 
 private:
     char* _buffer;
+	size_t _bufsize;
+
     ProtocolHeader* _cur_header = nullptr;
 	uv_tcp_t * _uv_handler;
-    uint32_t _cur_readn;
 };
-
-
 
 // 数据区分隔标识
 #define cTcpDataSignFlag    (0xD825)

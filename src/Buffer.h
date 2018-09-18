@@ -20,35 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
+#ifndef __BUFFER_H__
+#define __BUFFER_H__
 
-#ifndef __LOG_H__
-#define __LOG_H__
+class Buffer {
 
-#define LOG_IMPLEMENT_DEFAULT	0
-#define LOG_IMPLEMENT_PLOG		1
-
-#define LOG_IMPLEMENT LOG_IMPLEMENT_DEFAULT
-
-enum LogLevel {
-    none = 0,
-    fatal = 1,
-    error = 2,
-    warning = 3,
-    info = 4,
-    debug = 5,
-    verbose = 6
+private:
 };
-
-void _log(int level, const char* fmt, ...);
-
-
-#define log_verbose(fmt, ...) _log(LogLevel::verbose, fmt, ##__VA_ARGS__)
-#define log_debug(fmt, ...) _log(LogLevel::debug, fmt, ##__VA_ARGS__)
-#define log_info(fmt, ...) _log(LogLevel::info, fmt, ##__VA_ARGS__)
-#define log_warning(fmt, ...) _log(LogLevel::warning, fmt, ##__VA_ARGS__)
-#define log_error(fmt, ...) _log(LogLevel::error, fmt, ##__VA_ARGS__)
-#define log_fatal(fmt, ...) _log(LogLevel::fatal, fmt, ##__VA_ARGS__)
-#define log_none(fmt, ...) _log(LogLevel::none, fmt, ##__VA_ARGS__)
 
 
 #endif

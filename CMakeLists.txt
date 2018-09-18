@@ -11,7 +11,7 @@ include_directories(extern/plog/include)
 
 add_subdirectory(extern/libuv)
 
-set(SRC 
+set(SERVER_SRC 
     src/main.cpp
     src/GameServer.h
     src/GameServer.cpp
@@ -26,6 +26,20 @@ set(SRC
 )
 
 # 编译项目内的文件
-add_executable(GameServer ${SRC})
+add_executable(GameServer ${SERVER_SRC})
 
 target_link_libraries(GameServer uv_a)
+
+# Client
+
+project (TestClient)
+
+set(CLIENT_SRC 
+    src/test/main.cpp
+)
+
+add_executable(TestClient ${CLIENT_SRC})
+
+target_link_libraries(TestClient uv_a)
+
+

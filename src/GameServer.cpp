@@ -119,9 +119,13 @@ void GameServer::addClient(ClientSession* session) {
 	session->retain();
 }
 
-ClientSession::ClientSession()
-:_cur_readn(0) {
-    
+ClientSession::ClientSession() {
+    _buffer = new char[DEFAULT_RCVBUF_SIZE * 2];
+	_bufsize = 0;
+}
+
+ClientSession::~ClientSession() {
+	delete[] _buffer;
 }
 
 ClientSession * ClientSession::create(uv_tcp_t* uv_handle) {
@@ -145,48 +149,36 @@ void ClientSession::on_recv(const char* data, size_t readn) {
     // 每个Client都有一个buffer
     // 读取的字节追加到buffer中
     // 处理buffer中的数据...
-    
-    buf_append(data, readn);
-    read_protocol();
+
+	// 读到的数据放入buffer中
+	memcpy(_buffer, data, readn);
+
+	const char* read_p = _buffer; // buffer游标
+	uint32_t curReadSize = readn;
+		
+	for (;;) {
+		if (curReadSize < sizeof(ProtocolHeader)) {
+			break;
+		}
+
+		ProtocolHeader header = *(ProtocolHeader*)read_p;
+		if (curReadSize >= header.DataLen) {
+			this->on_data_read(read_p, header.DataLen);
+			// 删除buffer中已读部分
+			curReadSize -= header.DataLen;
+			memcpy(_buffer, read_p + header.DataLen, curReadSize);
+			// 游标移向下一个协议
+			read_p = _buffer;
+		}
+	}
 }
 
-void ClientSession::buf_append(const char* data, size_t readn) {
-    char* tmp = new char[_cur_readn + readn];
-    memcpy(tmp, _buffer, _cur_readn);
-    memcpy(tmp + _cur_readn, data, readn);
-    if (_cur_readn > 0) {
-        delete[] _buffer;
-    }
-    _cur_readn += readn;
-    _buffer = tmp;
+// 处理完整的协议数据
+void ClientSession::on_data_read(const char* data, size_t size) {
+	ProtocolHeader protoHeader = *(ProtocolHeader*)data;
+	log_info("read proto");
 }
 
-void ClientSession::buf_pophead(size_t size) {
-    char* tmp = new char[_cur_readn - size];
-    memcpy(tmp, _buffer + size, _cur_readn - size);
-    _buffer = tmp;
-    _cur_readn -= size;
-}
-
-void ClientSession::read_protocol() {
-    int size = sizeof(ProtocolHeader);
-    
-    if (_cur_header) {
-        if (_cur_readn + size >= _cur_header->DataLen) {
-            char* body = _buffer + size;
-            _cur_header = nullptr;
-            log_info("读到啦一个协议");
-            buf_pophead(size + _cur_header->DataLen);
-        }
-        return;
-    }
-    
-    if (_cur_readn >= size) {
-        ProtocolHeader* header = (ProtocolHeader*) _buffer;
-        _cur_header = header;
-        read_protocol();
-    }
-}
 
 void encryptData(void* buff, uint32_t buffLen, uint8_t key){
     uint8_t *p8 = (uint8_t*)buff;
