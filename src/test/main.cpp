@@ -1,52 +1,47 @@
 #include "uv.h"
-
-// 协议结构体
-struct ProtocolHeader {
-	uint16_t Sign;
-	uint16_t DataLen;
-};
+#include "core/ProtocolDefine.h"
+#include "TestClient.h"
+#include <random>
 
 uv_loop_t *loop;
 
-void on_write(uv_write_t* req, int status) {
-	printf("写完毕....\n");
+std::default_random_engine e;
+
+void thread_cb(void* arg) {
+	while (1) {
+		TestClient(loop).connect("0.0.0.0", 7300);
+		Sleep(e() % 3000);
+	}
 }
 
-void on_connect(uv_connect_t* req, int status) {
-	
-	const char say[] = "fucku motsssssssssssssssssssssssssssssssssssssssssssher!!!!!";
-
-	ProtocolHeader header = {111, 0};
-	char* ext_data = new char[sizeof(ProtocolHeader) + 100];
-
-	header.DataLen = sizeof(ProtocolHeader) + strlen(say) + 1;
-
-	memcpy(ext_data, &header, sizeof(ProtocolHeader));
-	memcpy(ext_data + sizeof(ProtocolHeader), say, strlen(say) + 1);
-
-	uv_buf_t buf;
-	uv_buf_init(ext_data, header.DataLen);
-
-	uv_write_t wreq;
-
-	uv_write(&wreq, req->handle, &buf, 1, on_write);
+void wait_for_a_while(uv_idle_t* handle) {
+	//printf("dasdasdas");
+	handle = 0;
 }
 
 int main() {
 
 	loop = uv_default_loop();
 
-	uv_tcp_t *socket = new uv_tcp_t();
-	uv_tcp_init(loop, socket);
+	e.seed(10);
 
-	uv_connect_t* connect = new uv_connect_t;
+	for (size_t i = 0; i < 1; i++)
+	{
+		uv_thread_t* thread_handle = new uv_thread_t;
+		uv_thread_create(thread_handle, thread_cb, NULL);
+	}
+	
+	uv_idle_t idler;
 
-	struct sockaddr_in dest;
-	uv_ip4_addr("0.0.0.0", 7300, &dest);
-
-	uv_tcp_connect(connect, socket, (const sockaddr*)&dest, on_connect);
+	uv_idle_init(loop, &idler);
+	uv_idle_start(&idler, wait_for_a_while);
 
 	uv_run(loop, UV_RUN_DEFAULT);
 
     return 0;
 }
+
+
+
+
+

@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 2.8)
 project (GameServer)
 
 # 头文件搜索目录
-include_directories(src/core)
+include_directories(src)
 include_directories(extern/libuv/include)
 include_directories(extern/plog/include)
 
@@ -13,11 +13,16 @@ add_subdirectory(extern/libuv)
 
 set(SERVER_SRC 
     src/main.cpp
-    src/GameServer.h
-    src/GameServer.cpp
+    src/logic/GameServer.h
+    src/logic/GameServer.cpp
+    src/core/TCPServer.h
+    src/core/TCPServer.cpp
+    src/core/TCPClient.h
+    src/core/TCPClient.cpp
     src/core/log.h
     src/core/log.cpp
     src/core/Constant.h
+    src/core/ProtocolDefine.h
     src/core/cocos/CCAutoreleasePool.h
     src/core/cocos/CCAutoreleasePool.cpp
     src/core/cocos/ccMacros.h
@@ -36,6 +41,8 @@ project (TestClient)
 
 set(CLIENT_SRC 
     src/test/main.cpp
+    src/test/TestClient.h
+    src/test/TestClient.cpp
 )
 
 add_executable(TestClient ${CLIENT_SRC})

@@ -25,9 +25,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "cocos/CCRef.h"
-#include "cocos/CCAutoreleasePool.h"
-#include "Constant.h"
+#include "core/cocos/CCRef.h"
+#include "core/cocos/CCAutoreleasePool.h"
+#include "core/Constant.h"
 
 
 #if CC_REF_LEAK_DETECTION

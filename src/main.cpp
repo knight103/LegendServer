@@ -1,10 +1,11 @@
 #include <uv.h>
-#include "GameServer.h"
+#include "logic/GameServer.h"
 
 int main(int argc, char** argv) {
 	
-	GameServer s;
-	s.start();
+	GameServer server("0.0.0.0", 7300);
+
+	server.run();
 
     return 0;
 }
