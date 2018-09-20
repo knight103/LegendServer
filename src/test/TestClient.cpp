@@ -68,7 +68,7 @@ void TestClient::send(char* buf, size_t size) {
 void on_connect(uv_connect_t* req, int status) {
 	TestClient* client = (TestClient*) req->data;
 	client->sendString("11111");
-	printf("·¢ËÍ......\n");
+	printf("sending......\n");
 }
 
 void write_cb(uv_write_t* req, int status) {

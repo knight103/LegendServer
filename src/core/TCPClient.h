@@ -27,12 +27,20 @@ THE SOFTWARE.
 #include "core/cocos/CCRef.h"
 #include "ProtocolDefine.h"
 
+class TCPServer;
+
 class TCPClient : public Ref {
 public:
 	static TCPClient * create(uv_tcp_t* uv_handle);
 
 	bool init(uv_tcp_t* uv_handle);
-public:
+
+
+	void setServer(TCPServer* server) { _server = server; }
+	TCPServer* getServer() { return _server; }
+
+	void onDisconnect();
+
     void on_recv(const char* data, size_t readn);
 
 	void on_data_read(const char* data, size_t size);
@@ -46,6 +54,7 @@ private:
 
     ProtocolHeader* _cur_header = nullptr;
 	uv_tcp_t * _uv_handler;
+	TCPServer* _server;
 };
 
 #endif

@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include <iostream>
 #include "TCPClient.h"
+#include "TCPServer.h"
 #include "Constant.h"
 
 TCPClient::TCPClient() {
@@ -82,7 +83,17 @@ void TCPClient::on_recv(const char* data, size_t readn) {
 void TCPClient::on_data_read(const char* data, size_t size) {
 	ProtocolHeader protoHeader = *(ProtocolHeader*)data;
 	const char* ext = data + sizeof(ProtocolHeader);
-	log_info("read proto%s", ext);
+	log_info("SAY: %s", ext);
+}
+
+void TCPClient::onDisconnect() {
+	// 从客户端列表移除
+	_server->removeClient(this);
+
+	// 释放缓存
+	uv_close((uv_handle_t*)_uv_handler, NULL);
+	//delete _uv_handler;
+	delete _buffer;
 }
 
 /*

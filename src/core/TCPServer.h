@@ -39,6 +39,8 @@ public:
 
 	void addClient(TCPClient* session);
 
+	void removeClient(TCPClient* session);
+
 public: // 属性方法
     uv_loop_t * loop() { return _loop; }
 	uv_tcp_t* uv_handle() { return _uv_handle; }

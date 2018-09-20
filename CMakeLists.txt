@@ -8,13 +8,17 @@ project (GameServer)
 include_directories(src)
 include_directories(extern/libuv/include)
 include_directories(extern/plog/include)
+include_directories(extern/lua)
+include_directories(extern/LuaBridge/Source)
 
 add_subdirectory(extern/libuv)
+add_subdirectory(extern/lua)
 
 set(SERVER_SRC 
     src/main.cpp
     src/logic/GameServer.h
     src/logic/GameServer.cpp
+    src/logic/GameProtocol.h
     src/core/TCPServer.h
     src/core/TCPServer.cpp
     src/core/TCPClient.h
@@ -34,6 +38,7 @@ set(SERVER_SRC
 add_executable(GameServer ${SERVER_SRC})
 
 target_link_libraries(GameServer uv_a)
+target_link_libraries(GameServer lua)
 
 # Client
 

@@ -68,7 +68,17 @@ void TCPServer::run() {
 
 void TCPServer::addClient(TCPClient* client) {
 	_clients.push_back(client);
+	client->setServer(this);
 	client->retain();
+}
+
+void TCPServer::removeClient(TCPClient* session) {
+	for (auto it = _clients.begin(); it != _clients.end(); ++it) {
+		if (*it == session)
+			(*it)->release();
+			it = _clients.erase(it);
+		break;
+	}
 }
 
 /// 处理新客户端连接
@@ -131,22 +141,24 @@ void alloc_cb(uv_handle_t* handle,size_t suggested_size,uv_buf_t* buf) {
 
 /// 处理客户端消息
 void on_read(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
-    if (nread <= 0) {
-        if(nread == UV_ECONNRESET) {
-			log_info("client disconnected");
-		} else if(nread == UV_EAGAIN || nread == UV_EINTR || nread == UV_ENODEV) {
-			log_info("client disconnected");
+	TCPClient* session = (TCPClient*)stream->data;
+
+	do {
+		if (nread <= 0) {
+			if (nread == UV_ECONNRESET || nread == UV_EOF) {
+				log_info("client disconnected");
+				session->onDisconnect();
+			}
+			break;
+		} else {
+			session->on_recv(buf->base, nread);
 		}
-        return;
-    }
-    
-    TCPClient* session = (TCPClient*) stream->data;
-    
-    session->on_recv(buf->base, nread);
-    
-    if (buf->base) {
-        delete []buf->base;
-    }
+	} while(0);
+
+
+	if (buf->base) {
+		delete[]buf->base;
+	}
 }
 
 

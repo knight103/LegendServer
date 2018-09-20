@@ -4,3 +4,6 @@
 [submodule "extern/plog"]
 	path = extern/plog
 	url = https://github.com/SergiusTheBest/plog
+[submodule "extern/LuaBridge"]
+	path = extern/LuaBridge
+	url = https://github.com/vinniefalco/LuaBridge

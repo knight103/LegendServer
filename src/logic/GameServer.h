@@ -4,11 +4,8 @@
 #include "core/TCPServer.h"
 
 class GameServer : public TCPServer {
-    
 public:
 	GameServer(const char* ip, int port);
-
-
 };
 
 #endif
