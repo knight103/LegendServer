@@ -23,9 +23,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "scripting/lua-bindings/manual/CCLuaBridge.h"
-
-NS_CC_BEGIN
+#include "CCLuaBridge.h"
 
 lua_State *LuaBridge::s_luaState = NULL;
 int        LuaBridge::s_newFunctionId = 0;
@@ -242,5 +240,3 @@ int LuaBridge::retainLuaFunction(lua_State *L, int functionIndex, int *retainCou
     if (retainCountReturn) *retainCountReturn = retainCount;
     return functionId;
 }
-
-NS_CC_END

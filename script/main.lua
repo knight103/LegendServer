@@ -1,6 +1,8 @@
 import(".init")
 import(".protocol")
 
+print("hello")
+
 local server = GameServer.getInstance()
 
 server:bind(S_CLIENT_CONNECT, function()

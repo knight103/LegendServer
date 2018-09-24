@@ -24,7 +24,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "base/CCScriptSupport.h"
+#include "CCScriptSupport.h"
 
 #if CC_ENABLE_SCRIPT_BINDING
 

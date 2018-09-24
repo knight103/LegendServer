@@ -32,6 +32,16 @@ set(SERVER_SRC
     src/core/cocos/ccMacros.h
     src/core/cocos/CCRef.h
     src/core/cocos/CCRef.cpp
+#    src/core/cocos/CCLuaBridge.h
+#    src/core/cocos/CCLuaBridge.cpp
+    src/core/cocos/CCLuaEngine.h
+    src/core/cocos/CCLuaEngine.cpp
+    src/core/cocos/CCLuaStack.h
+    src/core/cocos/CCLuaStack.cpp
+    src/core/cocos/CCLuaValue.h
+    src/core/cocos/CCLuaValue.cpp
+    src/core/cocos/CCScriptSupport.h
+    src/core/cocos/CCScriptSupport.cpp
 )
 
 # 编译项目内的文件

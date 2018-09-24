@@ -2,7 +2,8 @@
  Copyright (c) 2011-2012 cocos2d-x.org
  Copyright (c) 2013-2016 Chukong Technologies Inc.
  Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
- 
+ Copyright (c) 2018 harry.zhu
+
  http://www.cocos2d-x.org
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +27,9 @@
 
 #ifndef __CC_LUA_STACK_H_
 #define __CC_LUA_STACK_H_
+
+#include "core/cocos/CCRef.h"
+#include "core/cocos/CCLuaValue.h"
 
 extern "C" {
 #include <lua.h>
@@ -262,7 +266,7 @@ public:
      * @param resultArray a array used to store the return value.
      * @return 0 if it happen error or it hasn't return value, otherwise return 1.
      */
-    virtual int executeFunctionReturnArray(int handler,int numArgs,int numResults,__Array& resultArray);
+    //virtual int executeFunctionReturnArray(int handler,int numArgs,int numResults,__Array& resultArray);
     
     /**
      * Execute the lua function corresponding to the handler by the numArgs variables passed.
@@ -275,7 +279,7 @@ public:
      * @param func callback function which is called if the numResults > 0.
      * @return 0 if it happen error or it hasn't return value, otherwise return 1.
      */
-    virtual int executeFunction(int handler, int numArgs, int numResults, const std::function<void(lua_State*,int)>& func);
+    //virtual int executeFunction(int handler, int numArgs, int numResults, const std::function<void(lua_State*,int)>& func);
     
     /**
      * Handle the assert message.

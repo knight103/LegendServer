@@ -27,25 +27,12 @@
 #ifndef __SCRIPT_SUPPORT_H__
 #define __SCRIPT_SUPPORT_H__
 
-#include "base/ccConfig.h"
-#include "platform/CCCommon.h"
-#include "base/CCTouch.h"
-#include "base/CCEventTouch.h"
-#include "base/CCEventKeyboard.h"
+#include "core/cocos/CCRef.h"
 #include <map>
 #include <string>
 #include <list>
 
-/**
- * @addtogroup base
- * @{
- */
-
-#if CC_ENABLE_SCRIPT_BINDING
-
 typedef struct lua_State lua_State;
-
-NS_CC_BEGIN
 
 class TimerScriptHandler;
 class Layer;
@@ -379,206 +366,6 @@ struct SchedulerScriptData
 };
 
 /**
- * For Lua, the TouchesScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push touches data and actionType into the Lua stack as the parameters when the touches event is triggered.
- * @js NA
- */
-struct TouchesScriptData
-{
-    /** 
-     * The EventTouch::EventCode type. 
-     *
-     * @lua NA
-     * @js NA
-     */
-    EventTouch::EventCode actionType;
-    /** 
-     * For Lua, it Used to find the Lua function pointer by the ScriptHandlerMgr.
-     *
-     * @lua NA
-     * @js NA
-     */
-    void* nativeObject;
-    /** 
-     * The vector of Touch.For Lua, it would be convert to the Lua table form to be pushed into the Lua stack. 
-     *
-     * @lua NA
-     * @js NA
-     */
-    const std::vector<Touch*>& touches;
-    /** 
-     * event information, it is useless for Lua.
-     *
-     * @lua NA
-     * @js NA
-     */
-    Event* event;
-    
-    /**
-     * Constructor of TouchesScriptData.
-     *
-     * @lua NA
-     * @js NA
-     */
-    TouchesScriptData(EventTouch::EventCode inActionType, void* inNativeObject, const std::vector<Touch*>& inTouches, Event* evt)
-    : actionType(inActionType),
-      nativeObject(inNativeObject),
-      touches(inTouches),
-      event(evt)
-    {
-    }
-};
-
-/**
- * For Lua, the TouchScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push touch data and actionType converted to string type into the Lua stack as the parameters when the touch event is triggered.
- * @js NA
- */
-struct TouchScriptData
-{
-    /** 
-     * The EventTouch::EventCode type.
-     *
-     * @lua NA
-     * @js NA
-     */
-    EventTouch::EventCode actionType;
-    /** 
-     * For Lua, it Used to find the Lua function pointer by the ScriptHandlerMgr.
-     *
-     * @lua NA
-     * @js NA
-     */
-    void* nativeObject;
-    /** 
-     * touch information. it would be in x,y form to push into the Lua stack.
-     *
-     * @lua NA
-     * @js NA
-     */
-    Touch* touch;
-    /**
-     * event information,it is useless for Lua.
-     *
-     * @lua NA
-     * @js NA
-     */
-    Event* event;
-    
-    /** 
-     * Constructor of TouchScriptData.
-     *
-     * @lua NA
-     * @js NA
-     */
-    TouchScriptData(EventTouch::EventCode inActionType, void* inNativeObject, Touch* inTouch, Event* evt)
-    : actionType(inActionType),
-      nativeObject(inNativeObject),
-      touch(inTouch),
-      event(evt)
-    {
-    }
-};
-
-
-/**
- * For Lua, the KeypadScriptData is used to find the Lua function pointer by the nativeObject, then call the Lua function by push the actionType converted to string type into the Lua stack as the parameters when the Keypad event is triggered.
- * @js NA
- */
-struct KeypadScriptData
-{
-    /** 
-     * The specific type of EventKeyboard::KeyCode
-     *
-     * @lua NA
-     * @js NA
-     */
-    EventKeyboard::KeyCode actionType;
-    /** 
-     * For Lua, it Used to find the Lua function pointer by the ScriptHandlerMgr.
-     *
-     * @lua NA
-     * @js NA
-     */
-    void* nativeObject;
-    
-    /**
-     * Constructor of KeypadScriptData.
-     *
-     * @lua NA
-     * @js NA
-     */
-    KeypadScriptData(EventKeyboard::KeyCode inActionType,void* inNativeObject)
-    : actionType(inActionType),nativeObject(inNativeObject)
-    {
-    }
-};
-
-
-/**
- * For Lua, the CommonScriptData is used to find the Lua function pointer by the handler, then call the Lua function by push the eventName, eventSource(if it not nullptr), eventSourceClassName(if it is nullptr or "", and the eventSource is not nullptr,would give the default string "cc.Ref") into the Lua stack as the parameter when the common event such as is triggered.
- * @js NA
- */
-struct CommonScriptData
-{
-    /** 
-     * The index to find the corresponding to the Lua function pointer.
-     *
-     * @lua NA
-     * @js NA
-     */
-    int handler;
-    /** 
-     * The string value to be pushed into the Lua stack.
-     *
-     * @lua NA
-     * @js NA
-     */
-    char eventName[64];
-    /** 
-     * The source object trigger the event,could be nullptr.
-     *
-     * @lua NA
-     * @js NA
-     */
-    Ref* eventSource;
-    /**
-     * The class name of source object trigger the event, could be nullptr.
-     *
-     * @lua NA
-     * @js NA
-     */
-    char eventSourceClassName[64];
-    
-    /** 
-     * Constructor of  CommonScriptData.
-     *
-     * @lua NA
-     * @js NA
-     */
-    CommonScriptData(int inHandler,const char* inName, Ref* inSource = nullptr,const char* inClassName = nullptr)
-    : handler(inHandler),
-      eventSource(inSource)
-    {
-        if (nullptr == inName)
-        {
-            memset(eventName, 0, sizeof(eventName));
-        }
-        else
-        {
-            strncpy(eventName, inName, sizeof(eventName));
-        }
-        
-        if (nullptr == inClassName)
-        {
-            memset(eventSourceClassName, 0, sizeof(eventSourceClassName));
-        }
-        else
-        {
-            strncpy(eventSourceClassName, inClassName, 64);
-        }
-    }
-};
-
-/**
  * The ScriptEvent wrapper the different script data corresponding to the ScriptEventType in to the unified struct.
  * when the corresponding event is triggered, we could call the `sendEvent` of ScriptEngineProtocol to handle the event.
  * @js NA
@@ -619,7 +406,7 @@ struct ScriptEvent
  * So a crash will appear on Win32 if you click the close button.
  * @js NA
  */
-class CC_DLL ScriptEngineProtocol
+class ScriptEngineProtocol
 {
 public:
     
@@ -678,7 +465,7 @@ public:
     /**
      * Release all native refs for the given owner in script scope
      */
-    virtual void releaseAllNativeRefs(cocos2d::Ref* /*owner*/) {}
+    virtual void releaseAllNativeRefs(Ref* /*owner*/) {}
 
     /** 
      * Remove script object,The specific meaning should refer to the ScriptType.
@@ -815,7 +602,7 @@ class Node;
  * @since v0.99.5-x-0.8.5
  * @js NA
  */
-class CC_DLL ScriptEngineManager
+class ScriptEngineManager
 {
 public:
     /** 
@@ -901,21 +688,7 @@ public:
      * @js NA
      */
     static void sendNodeEventToLua(Node* node, int action);
-    /**
-     * @deprecated Use getInstance() instead.
-     *
-     * @lua NA
-     * @js NA
-     */
-    CC_DEPRECATED_ATTRIBUTE static ScriptEngineManager* sharedManager() { return ScriptEngineManager::getInstance(); };
-    /**
-     * @deprecated Use destroyInstance() instead.
-     *
-     * @lua NA
-     * @js NA
-     */
-    CC_DEPRECATED_ATTRIBUTE static void purgeSharedManager() { ScriptEngineManager::destroyInstance(); };
-    
+
 private:
     ScriptEngineManager(void)
     : _scriptEngine(nullptr)
@@ -924,14 +697,5 @@ private:
     
     ScriptEngineProtocol *_scriptEngine;
 };
-
-NS_CC_END
-
-
-
-#endif // #if CC_ENABLE_SCRIPT_BINDING
-
-// end group
-/// @}
 
 #endif // __SCRIPT_SUPPORT_H__

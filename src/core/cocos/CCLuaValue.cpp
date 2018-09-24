@@ -24,10 +24,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "scripting/lua-bindings/manual/CCLuaValue.h"
-
-
-NS_CC_BEGIN
+#include "CCLuaValue.h"
 
 const LuaValue LuaValue::intValue(const int intValue)
 {
@@ -155,5 +152,3 @@ void LuaValue::copy(const LuaValue& rhs)
         _ccobjectType = new std::string(*rhs._ccobjectType);
     }
 }
-
-NS_CC_END

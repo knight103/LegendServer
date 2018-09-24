@@ -27,6 +27,7 @@
 #ifndef __CC_LUA_VALUE_H_
 #define __CC_LUA_VALUE_H_
 
+#include "core/cocos/CCRef.h"
 #include <string>
 #include <map>
 #include <list>
@@ -34,9 +35,6 @@
 extern "C" {
 #include "lua.h"
 }
-
-#include "base/ccTypes.h"
-#include "base/CCRef.h"
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY
 using std::memset;
@@ -47,8 +45,6 @@ using std::memcpy;
  * @addtogroup lua
  * @{
  */
-
-NS_CC_BEGIN
 
 typedef int LUA_FUNCTION;
 typedef int LUA_TABLE;
@@ -286,8 +282,4 @@ private:
     void copy(const LuaValue& rhs);
 };
 
-NS_CC_END
-
-// end group
-/// @}
 #endif // __CC_LUA_VALUE_H_
