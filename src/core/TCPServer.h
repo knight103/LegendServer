@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 #include <uv.h>
 #include <list>
-#include "cocos/CCRef.h"
+#include "core/Ref.h"
 
 class TCPClient;
 

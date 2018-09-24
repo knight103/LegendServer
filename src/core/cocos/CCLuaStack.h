@@ -28,7 +28,7 @@
 #ifndef __CC_LUA_STACK_H_
 #define __CC_LUA_STACK_H_
 
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 #include "core/cocos/CCLuaValue.h"
 
 extern "C" {

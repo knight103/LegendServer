@@ -27,7 +27,7 @@
 #ifndef __SCRIPT_SUPPORT_H__
 #define __SCRIPT_SUPPORT_H__
 
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 #include <map>
 #include <string>
 #include <list>

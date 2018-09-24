@@ -28,6 +28,7 @@
 #include "CCLuaStack.h"
 #include "core/Constant.h"
 #include "core/log.h"
+#include "core/FileUtils.h"
 #include <string.h>
 extern "C" {
 #include <lua.h>
@@ -203,37 +204,24 @@ int LuaStack::executeScriptFile(const char* filename)
         }
     }
 
-    //FileUtils *utils = FileUtils::getInstance();
+    FileUtils *utils = FileUtils::getInstance();
 
     //
     // 1. check .luac suffix
     // 2. check .lua suffix
     //
-    //std::string tmpfilename = buf + BYTECODE_FILE_EXT;
-    //if (utils->isFileExist(tmpfilename))
-    //{
-    //    buf = tmpfilename;
-    //}
-    //else
-    //{
-    //    tmpfilename = buf + NOT_BYTECODE_FILE_EXT;
-    //    if (utils->isFileExist(tmpfilename))
-    //    {
-    //        buf = tmpfilename;
-    //    }
-    //}
+    std::string tmpfilename = buf + NOT_BYTECODE_FILE_EXT;
+    buf = tmpfilename;
 
-    //std::string fullPath = utils->fullPathForFilename(buf);
-    //Data data = utils->getDataFromFile(fullPath);
-    //int rn = 0;
-    //if (!data.isNull())
-    //{
-    //    if (luaLoadBuffer(_state, (const char*)data.getBytes(), (int)data.getSize(), fullPath.c_str()) == 0)
-    //    {
-    //        rn = executeFunction(0);
-    //    }
-    //}
-    //return rn;
+    std::string fullPath = utils->fullPathForFilename(buf);
+    std::string data = utils->getStringFromFile(fullPath);
+    
+    int rn;
+    if (luaLoadBuffer(_state, (const char*)data.c_str(), (int)data.length(), fullPath.c_str()) == 0)
+    {
+        rn = executeFunction(0);
+    }
+    
 	return 0;
 }
 
@@ -649,52 +637,10 @@ void skipBOM(const char*& chunk, int& chunkSize)
 
 } // end anonymous namespace
 
-//int LuaStack::luaLoadBuffer(lua_State *L, const char *chunk, int chunkSize, const char *chunkName)
-//{
-//    int r = 0;
-//
-//    if (_xxteaEnabled && strncmp(chunk, _xxteaSign, _xxteaSignLen) == 0)
-//    {
-//        // decrypt XXTEA
-//        xxtea_long len = 0;
-//        unsigned char* result = xxtea_decrypt((unsigned char*)chunk + _xxteaSignLen,
-//                                              (xxtea_long)chunkSize - _xxteaSignLen,
-//                                              (unsigned char*)_xxteaKey,
-//                                              (xxtea_long)_xxteaKeyLen,
-//                                              &len);
-//        unsigned char* content = result;
-//        xxtea_long contentSize = len;
-//        skipBOM((const char*&)content, (int&)contentSize);
-//        r = luaL_loadbuffer(L, (char*)content, contentSize, chunkName);
-//        free(result);
-//    }
-//    else
-//    {
-//        skipBOM(chunk, chunkSize);
-//        r = luaL_loadbuffer(L, chunk, chunkSize, chunkName);
-//    }
-//
-//#if defined(COCOS2D_DEBUG) && COCOS2D_DEBUG > 0
-//    if (r)
-//    {
-//        switch (r)
-//        {
-//            case LUA_ERRSYNTAX:
-//                CCLOG("[LUA ERROR] load \"%s\", error: syntax error during pre-compilation.", chunkName);
-//                break;
-//
-//            case LUA_ERRMEM:
-//                CCLOG("[LUA ERROR] load \"%s\", error: memory allocation error.", chunkName);
-//                break;
-//
-//            case LUA_ERRFILE:
-//                CCLOG("[LUA ERROR] load \"%s\", error: cannot open/read file.", chunkName);
-//                break;
-//
-//            default:
-//                CCLOG("[LUA ERROR] load \"%s\", error: unknown.", chunkName);
-//        }
-//    }
-//#endif
-//    return r;
-//}
+int LuaStack::luaLoadBuffer(lua_State *L, const char *chunk, int chunkSize, const char *chunkName)
+{
+    int r = 0;
+    skipBOM(chunk, chunkSize);
+    r = luaL_loadbuffer(L, chunk, chunkSize, chunkName);
+    return r;
+}

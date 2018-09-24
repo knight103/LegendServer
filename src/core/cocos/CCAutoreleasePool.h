@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 #include <vector>
 #include <string>
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 
 /**
  * A pool for managing autorelease objects.

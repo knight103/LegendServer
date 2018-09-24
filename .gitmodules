@@ -7,3 +7,9 @@
 [submodule "extern/LuaBridge"]
 	path = extern/LuaBridge
 	url = https://github.com/vinniefalco/LuaBridge
+[submodule "extern/tinyxml2"]
+	path = extern/tinyxml2
+	url = https://github.com/leethomason/tinyxml2
+[submodule "extern/rapidjson"]
+	path = extern/rapidjson
+	url = https://github.com/Tencent/rapidjson

@@ -28,7 +28,7 @@
 #ifndef __CC_LUA_ENGINE_H__
 #define __CC_LUA_ENGINE_H__
 
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 #include "core/cocos/CCScriptSupport.h"
 
 extern "C" {

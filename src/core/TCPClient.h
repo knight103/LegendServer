@@ -24,7 +24,7 @@ THE SOFTWARE.
 #define __TCPCLIENT_H__
 
 #include <uv.h>
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 #include "ProtocolDefine.h"
 
 class TCPServer;

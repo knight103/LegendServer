@@ -27,11 +27,13 @@ set(SERVER_SRC
     src/core/log.cpp
     src/core/Constant.h
     src/core/ProtocolDefine.h
+    src/core/Ref.h
+    src/core/Ref.cpp
+    src/core/FileUtils.h
+    src/core/FileUtils.cpp
     src/core/cocos/CCAutoreleasePool.h
     src/core/cocos/CCAutoreleasePool.cpp
     src/core/cocos/ccMacros.h
-    src/core/cocos/CCRef.h
-    src/core/cocos/CCRef.cpp
 #    src/core/cocos/CCLuaBridge.h
 #    src/core/cocos/CCLuaBridge.cpp
     src/core/cocos/CCLuaEngine.h

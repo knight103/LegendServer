@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#include "core/cocos/CCRef.h"
+#include "core/Ref.h"
 #include "core/cocos/CCAutoreleasePool.h"
 #include "core/Constant.h"
 
