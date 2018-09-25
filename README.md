@@ -10,8 +10,13 @@ cmake ..  （Macos执行 cmake -G Xcode ..）
 ```
 
 # TODO
-* 文件管理系统(FileUtils)   doing~
-* 数据库管理系统(FileUtils)
+* 文件管理系统 (FileUtils) ⭕️
+  * 基本操作
+  * 搜索路径管理
+  * 缓存管理
+* lua引擎 (LuaEngine)
+  * 自动绑定脚本
+* 数据库管理系统 (FileUtils)
 * ...
 
 
