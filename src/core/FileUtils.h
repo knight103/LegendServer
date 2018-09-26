@@ -23,7 +23,6 @@ THE SOFTWARE.
 #ifndef __FILEUTILS_H__
 #define __FILEUTILS_H__
 
-
 #include <string>
 #include <vector>
 

@@ -1,28 +1,23 @@
 #include "logic/GameServer.h"
 #include <iostream>
 #include <uv.h>
+#include "core/PlatformConfig.h"
 #include "core/FileUtils.h"
-
 #include "core/cocos/CCLuaEngine.h"
 
-int sayHello(lua_State* L) {
-	std::cout << "start lua\n";
-	return 0;
-}
 
-#ifdef __WIN32
-const char* rootPath = "";
-#endif
-
-#if defined(__APPLE__)
+#if (TARGET_PLATFORM == PLATFORM_MAC)
 const char* rootPath = "/Users/harry/Desktop/MyGameServer/";
+
+#elif (TARGET_PLATFORM == PLATFORM_WIN32)
+const char* rootPath = "C:\\Users\\zhuhui.harry\\Desktop\\MyGameServer\\";
 #endif
+
 
 
 int main(int argc, char** argv) {
     
     FileUtils::getInstance()->setDefaultResourceRootPath(rootPath);
-    
     
 	LuaEngine* engine = LuaEngine::getInstance();
 	engine->addSearchPath(rootPath);
