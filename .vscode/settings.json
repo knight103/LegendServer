@@ -26,6 +26,11 @@
         "new": "cpp",
         "stdexcept": "cpp",
         "type_traits": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "__locale": "cpp",
+        "thread": "cpp",
+        "__string": "cpp",
+        "__bit_reference": "cpp",
+        "sstream": "cpp"
     }
 }

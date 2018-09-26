@@ -7,7 +7,7 @@
 
 
 #if (TARGET_PLATFORM == PLATFORM_MAC)
-const char* rootPath = "/Users/harry/Desktop/MyGameServer/";
+const char* rootPath = "/Users/harry/LegendServer/";
 
 #elif (TARGET_PLATFORM == PLATFORM_WIN32)
 const char* rootPath = "C:\\Users\\zhuhui.harry\\Desktop\\MyGameServer\\";
@@ -18,10 +18,10 @@ const char* rootPath = "C:\\Users\\zhuhui.harry\\Desktop\\MyGameServer\\";
 int main(int argc, char** argv) {
     
     FileUtils::getInstance()->setDefaultResourceRootPath(rootPath);
+    FileUtils::getInstance()->addSearchPath("script");
     
 	LuaEngine* engine = LuaEngine::getInstance();
-	engine->addSearchPath(rootPath);
-	engine->executeScriptFile("script/main.lua");
+	engine->executeScriptFile("main.lua");
 
 	GameServer server("0.0.0.0", 7300);
 	server.run();

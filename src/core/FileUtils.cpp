@@ -69,7 +69,6 @@ void FileUtils::setDelegate(FileUtils *delegate)
 }
 
 FileUtils::FileUtils()
-    : _writablePath("")
 {
 }
 
@@ -80,7 +79,6 @@ FileUtils::~FileUtils()
 bool FileUtils::init()
 {
     _searchPathArray.push_back(_defaultResRootPath);
-    _searchResolutionsOrderArray.push_back("");
     return true;
 }
 
@@ -110,21 +108,31 @@ std::string FileUtils::getStringFromFile(const std::string& filename)
     return s;
 }
 
-std::string FileUtils::fullPathForFilename(const std::string &filename) const
-{
-    if (filename.empty())
-    {
+std::string FileUtils::fullPathForFilename(const std::string &filename) const {
+    if (filename.empty()) {
         return "";
     }
-
-    if (isAbsolutePath(filename))
-    {
+    
+    if (isAbsolutePath(filename)) {
         return filename;
     }
+    
+    // TODO: 从缓存读?? 暂时没做
 
     std::string fullpath;
+    for (const auto& searchIt : _searchPathArray)
+    {
+        fullpath = this->getPathForFilename(filename, searchIt.str());
+        
+        if (!fullpath.empty())
+        {
+            // Using the filename passed in as key.
+//            _fullPathCache.emplace(filename, fullpath);
+            return fullpath;
+        }
+    }
     
-    fullpath = _defaultResRootPath + filename;
+    fullpath = (_defaultResRootPath / filename).str();
 
     return fullpath;
 }
@@ -159,7 +167,7 @@ bool FileUtils::isFileExistInternal(const std::string& filePath) const
     
     bool ret = false;
     
-    std::string fullpath = fullPathForFilename(filePath);
+    std::string fullpath = filePath;
     
     FILE *fp = fopen(fullpath.c_str(), "rb");
     
@@ -172,14 +180,69 @@ bool FileUtils::isFileExistInternal(const std::string& filePath) const
     return ret;
 }
 
+void FileUtils::addSearchPath(const std::string& searchpath, const bool front) {
+    std::string prefix;
+    if (!isAbsolutePath(searchpath))
+        prefix = _defaultResRootPath.str();
+    
+    std::string path = pathJoin(prefix, searchpath);
+    
+    if (front) {
+        _originalSearchPaths.insert(_originalSearchPaths.begin(), searchpath);
+        _searchPathArray.insert(_searchPathArray.begin(), path);
+    } else {
+        _originalSearchPaths.push_back(searchpath);
+        _searchPathArray.push_back(path);
+    }
+}
+
 void FileUtils::setDefaultResourceRootPath(const std::string& path)
 {
-    if (_defaultResRootPath != path)
+    if (_defaultResRootPath.str() != path)
     {
-        _defaultResRootPath = path;
-        if (!_defaultResRootPath.empty() && _defaultResRootPath[_defaultResRootPath.length()-1] != '/')
-        {
-            _defaultResRootPath += '/';
-        }
+        _defaultResRootPath = Path(path);
     }
+}
+
+std::string FileUtils::getPathForFilename(const std::string& filename, const std::string& searchPath) const {
+    std::string file = filename;
+    std::string file_path = "";
+    size_t pos = filename.find_last_of("/");
+    if (pos != std::string::npos)
+    {
+        file_path = filename.substr(0, pos+1);
+        file = filename.substr(pos+1);
+    }
+    
+    // searchPath + file_path
+    std::string path = searchPath;
+    path += file_path;
+    
+    path = getFullPathForDirectoryAndFilename(path, file);
+    
+    return path;
+}
+
+std::string FileUtils::getFullPathForDirectoryAndFilename(const std::string& directory, const std::string& filename) const {
+    std::string ret = directory;
+    if (directory.size() && directory[directory.size()-1] != '/'){
+        ret += '/';
+    }
+    ret += filename;
+    
+    // if the file doesn't exist, return an empty string
+    if (!isFileExistInternal(ret)) {
+        ret = "";
+    }
+    return ret;
+}
+
+std::string FileUtils::pathJoin(const std::string& base, const std::string& add) {
+    std::string ret = base;
+    
+    if (ret[ret.length()-1] != '/') {
+        ret += '/';
+    }
+    
+    return ret + add;
 }

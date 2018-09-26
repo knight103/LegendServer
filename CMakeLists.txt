@@ -29,6 +29,8 @@ set(SERVER_SRC
     src/core/ProtocolDefine.h
     src/core/Ref.h
     src/core/Ref.cpp
+    src/core/Path.h
+    src/core/Path.cpp
     src/core/FileUtils.h
     src/core/FileUtils.cpp
     src/core/cocos/CCAutoreleasePool.h

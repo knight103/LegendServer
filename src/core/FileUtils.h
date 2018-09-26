@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include <string>
 #include <vector>
+#include "core/Path.h"
 
 class FileUtils {
 public:
@@ -35,7 +36,7 @@ public:
     static void setDelegate(FileUtils *delegate);
 
     virtual ~FileUtils();
-
+    
     /**
      *  Gets string from a file.
      */
@@ -62,24 +63,53 @@ public:
     virtual bool isFileExistInternal(const std::string& filePath) const;
     
     /**
+     *  添加搜索路径
+     */
+    void addSearchPath(const std::string& searchpath, const bool front=false);
+    
+    /**
      * Set default resource root path.
      */
     void setDefaultResourceRootPath(const std::string& path);
+    
+public:
+    /**
+     *  连接两个路径，返回一个完整路径
+     */
+    static std::string pathJoin(const std::string& base, const std::string& add);
+    
+protected:
+    /**
+     *  获取文件的全路径
+     */
+    virtual std::string getPathForFilename(const std::string& filename, const std::string& searchPath) const;
+    
+    /**
+     *  获取文件的全路径
+     */
+    virtual std::string getFullPathForDirectoryAndFilename(const std::string& directory, const std::string& filename) const;
 
 protected:
     FileUtils();
 
     virtual bool init();
 
+    /**
+     * 唯一实例
+     */
     static FileUtils* _instance;
-
-    std::string _writablePath;
     
-    std::string _defaultResRootPath;
+    /**
+     * 默认工作根目录
+     */
+    Path _defaultResRootPath;
     
-    std::vector<std::string> _searchPathArray;
+    /**
+     * 使用setSearchPaths、addSearchPath方法会存放在这
+     */
+    std::vector<Path> _originalSearchPaths;
     
-    std::vector<std::string> _searchResolutionsOrderArray;
+    std::vector<Path> _searchPathArray;
 };
 
 #endif
