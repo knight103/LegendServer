@@ -1,12 +1,11 @@
-print("hello1")
-print("hello2")
-print("hello3")
-print("hello4")
+-- print(package.path)
+
+require "functions"
+
+print("hello in lua")
 
 import(".init")
 import(".protocol")
-
-print("hello")
 
 local server = GameServer.getInstance()
 

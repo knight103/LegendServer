@@ -7,7 +7,7 @@
 
 
 #if (TARGET_PLATFORM == PLATFORM_MAC)
-const char* rootPath = "/Users/harry/LegendServer/";
+const char* rootPath = "/Users/harry/Desktop/LegendServer/";
 
 #elif (TARGET_PLATFORM == PLATFORM_WIN32)
 const char* rootPath = "C:\\Users\\zhuhui.harry\\Desktop\\MyGameServer\\";

@@ -131,10 +131,8 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const {
             return fullpath;
         }
     }
-    
-    fullpath = (_defaultResRootPath / filename).str();
 
-    return fullpath;
+    return "";
 }
 
 bool FileUtils::isAbsolutePath(const std::string& path) const
