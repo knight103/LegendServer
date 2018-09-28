@@ -110,7 +110,7 @@ namespace {
             next = searchpath.find_first_of(";", begin);
         } while (begin < (int)searchpath.length());
         
-        if (not chunk.empty())
+        if (!chunk.empty())
         {
             LuaStack* stack = LuaEngine::getInstance()->getLuaStack();
             stack->luaLoadBuffer(L, chunk.c_str(),

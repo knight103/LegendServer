@@ -1,22 +1,12 @@
--- print(package.path)
 
-require "functions"
+require "ls.init"
 
-print("hello in lua")
+local function main()
+    local server = require("app.server").new("0.0.0.0", 7300)
+    server:run()
+end
 
-import(".init")
-import(".protocol")
-
-local server = GameServer.getInstance()
-
-server:bind(S_CLIENT_CONNECT, function()
-    print("新客户端连接")
-end)
-
-server:bind(S_CLIENT_MESSAGE, function()
-    print("收到客户端消息")
-end)
-
-server:bind(S_CLIENT_DISCONNECT, function()
-    print("客户端关闭")
-end)
+local status, msg = xpcall(main, __G__TRACKBACK__)
+if not status then
+    print(msg)
+end

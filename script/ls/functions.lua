@@ -294,8 +294,8 @@ function import(moduleName, currentModuleName)
 
         if not currentModuleNameParts then
             if not currentModuleName then
-                local n,v = debug.getlocal(3, 1)
-                currentModuleName = v
+                -- local n,v = debug.getlocal(3, 1)
+                -- currentModuleName = v
             end
 
             currentModuleNameParts = string.split(currentModuleName, ".")
