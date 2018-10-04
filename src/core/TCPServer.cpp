@@ -81,6 +81,11 @@ void TCPServer::removeClient(TCPClient* session) {
 	}
 }
 
+TCPClient* TCPServer::newClient(uv_tcp_t* handle) {
+	TCPClient* tcpClient = TCPClient::create(handle);
+	return tcpClient;
+}
+
 /// 处理新客户端连接
 void on_new_connection(uv_stream_t *server_stream, int status) {
     int r;
@@ -119,9 +124,9 @@ void on_new_connection(uv_stream_t *server_stream, int status) {
     }
     
     // 建立连接成功，创建ClientSession
-	TCPClient * session = TCPClient::create(client);
-	server->addClient(session);
-    
+	TCPClient* session = server->newClient(client);
+    server->addClient(session);
+
     r = uv_read_start((uv_stream_t*)client, alloc_cb, on_read);
     if(r) {
         log_error("uv_read_start failed");

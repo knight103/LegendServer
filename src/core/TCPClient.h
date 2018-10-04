@@ -31,10 +31,11 @@ class TCPServer;
 
 class TCPClient : public Ref {
 public:
+	virtual ~TCPClient();
+
 	static TCPClient * create(uv_tcp_t* uv_handle);
 
 	bool init(uv_tcp_t* uv_handle);
-
 
 	void setServer(TCPServer* server) { _server = server; }
 	TCPServer* getServer() { return _server; }
@@ -43,10 +44,10 @@ public:
 
     void on_recv(const char* data, size_t readn);
 
-	void on_data_read(const char* data, size_t size);
-private:
+	virtual void on_data_read(const char* data, size_t size);
+protected:
     TCPClient();
-	~TCPClient();
+	
 
 private:
     char* _buffer;

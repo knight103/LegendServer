@@ -36,10 +36,5 @@ int main(int argc, char** argv) {
 
 	engine->executeScriptFile("main.lua");
 
-	//GameServer server("0.0.0.0", 7300);
-	//server.run();
-
-
-
     return 0;
 }

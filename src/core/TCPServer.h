@@ -28,7 +28,6 @@ THE SOFTWARE.
 #include "core/Ref.h"
 
 class TCPClient;
-
 class TCPServer : public Ref {
 public:
 
@@ -36,6 +35,8 @@ public:
     ~TCPServer();
 
     void run();
+
+	virtual TCPClient* newClient(uv_tcp_t* handle);
 
 	void addClient(TCPClient* session);
 

@@ -81,9 +81,6 @@ void TCPClient::on_recv(const char* data, size_t readn) {
 
 // 处理完整的协议数据
 void TCPClient::on_data_read(const char* data, size_t size) {
-	ProtocolHeader protoHeader = *(ProtocolHeader*)data;
-	const char* ext = data + sizeof(ProtocolHeader);
-	log_info("SAY: %s", ext);
 }
 
 void TCPClient::onDisconnect() {

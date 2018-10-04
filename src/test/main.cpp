@@ -24,18 +24,18 @@ int main() {
 
 	loop = uv_default_loop();
 
-	for (size_t i = 0; i < 10; i++)
-	{
-		uv_thread_t* thread_handle = new uv_thread_t;
-		uv_thread_create(thread_handle, thread_cb, NULL);
-	}
+	// for (size_t i = 0; i < 10; i++)
+	// {
+	// 	uv_thread_t* thread_handle = new uv_thread_t;
+	// 	uv_thread_create(thread_handle, thread_cb, NULL);
+	// }
 
-	//TestClient * client = new TestClient(loop);
-	//client->connect("0.0.0.0", 7300);
+	TestClient * client = new TestClient(loop);
+	client->connect("0.0.0.0", 7300);
 
-	uv_idle_t idle;
-	uv_idle_init(loop, &idle);
-	uv_idle_start(&idle, idle_cb);
+	// uv_idle_t idle;
+	// uv_idle_init(loop, &idle);
+	// uv_idle_start(&idle, idle_cb);
 
 	uv_run(loop, UV_RUN_DEFAULT);
 

@@ -18,6 +18,8 @@ set(SERVER_SRC
     src/main.cpp
     src/logic/GameServer.h
     src/logic/GameServer.cpp
+    src/logic/GameClient.h
+    src/logic/GameClient.cpp
     src/logic/GameProtocol.h
     src/core/TCPServer.h
     src/core/TCPServer.cpp

@@ -29,9 +29,13 @@ THE SOFTWARE.
 
 #define PROTOCOL_SIGN (0x0000)
 
+#define PROTOCOL_FLAG_STRING (0x0010)
+#define PROTOCOL_FLAG_OTHER (0x0100)
+
 struct ProtocolHeader {
     uint16_t sign;  // 标识符
     uint16_t len;   // 总大小(包括头大小)
+	uint16_t flag;	
 
     inline ProtocolHeader() {
         sign = PROTOCOL_SIGN;

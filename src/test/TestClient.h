@@ -13,6 +13,8 @@ public:
 
 	void sendString(const char* str);
 
+	void sendData(void* data, size_t size);
+
 	void send(char* buf, size_t size);
 
 private:

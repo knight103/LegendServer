@@ -1,6 +1,12 @@
 
 #include "TestClient.h"
 #include "core/ProtocolDefine.h"
+#include "logic/GameProtocol.h"
+
+struct ProtocolSend {
+	uint32_t _protoId;  // id
+	uint32_t _dataLen;  // 整体长度
+};
 
 void on_connect(uv_connect_t*, int);
 void write_cb(uv_write_t*, int);
@@ -57,6 +63,21 @@ void TestClient::sendString(const char* str) {
 	send(sendBuf, header.len);
 }
 
+void TestClient::sendData(void* data, size_t size) {
+
+	int headLen = sizeof(ProtocolHeader);
+	int bodyLen = size;
+
+	char* sendBuf = new char[headLen + bodyLen];
+	ProtocolHeader header;
+	header.len = headLen + bodyLen;
+
+	memcpy(sendBuf, &header, headLen);
+	memcpy(sendBuf + headLen, data, bodyLen);
+
+	send(sendBuf, header.len);
+}
+
 void TestClient::send(char* buf, size_t size) {
 	uv_write_t *req = new uv_write_t;
 	req->data = this;
@@ -67,15 +88,28 @@ void TestClient::send(char* buf, size_t size) {
 
 void on_connect(uv_connect_t* req, int status) {
 	TestClient* client = (TestClient*) req->data;
-	client->sendString("11111");
+
+	size_t extDataLen = 100;
+	size_t dataLen = 100 + 8;
+
+	char* buffer = new char[dataLen];
+	memset(buffer, 0, dataLen);
+
+	ProtocolSend proto;
+	proto._protoId = 6666;
+	proto._dataLen = dataLen;
+
+	memcpy(buffer, &proto, sizeof(ProtocolSend));
+	memcpy(buffer + sizeof(ProtocolSend), "fuck", 5);
+
+	client->sendData(buffer, dataLen);
+
 	printf("sending......\n");
 }
 
 void write_cb(uv_write_t* req, int status) {
 	TestClient* client = (TestClient*)req->data;
 	client->disconnect();
-
-	delete[] req->write_buffer.base;
 	delete req;
 }
 
