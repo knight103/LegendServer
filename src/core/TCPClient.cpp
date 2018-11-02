@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "TCPServer.h"
 #include "Constant.h"
 
+void write_cb(uv_write_t* req, int status);
+
 TCPClient::TCPClient() {
     _buffer = new char[DEFAULT_RCVBUF_SIZE * 2];
 	_bufsize = 0;
@@ -91,6 +93,34 @@ void TCPClient::onDisconnect() {
 	uv_close((uv_handle_t*)_uv_handler, NULL);
 	//delete _uv_handler;
 	delete _buffer;
+}
+
+void TCPClient::sendData(void* buf, size_t bufSize) {
+	int headLen = sizeof(ProtocolHeader);
+	int bodyLen = bufSize;
+
+	char* sendBuf = new char[headLen + bodyLen];
+	ProtocolHeader header;
+	header.len = headLen + bodyLen;
+
+	memcpy(sendBuf, &header, headLen);
+	memcpy(sendBuf + headLen, buf, bodyLen);
+
+	send(sendBuf, header.len);
+}
+
+void TCPClient::send(void* buf, size_t size) {
+	uv_write_t *req = new uv_write_t;
+	req->data = this;
+	req->write_buffer = uv_buf_init((char*)buf, size);
+
+	uv_write(req, (uv_stream_t*)_uv_handler, &req->write_buffer, 1, write_cb);
+}
+
+void TCPClient::onInit() {}
+
+void write_cb(uv_write_t* req, int status) {
+	delete req;
 }
 
 /*

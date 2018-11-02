@@ -30,3 +30,21 @@ private:
 	uint32_t _headLen;
 	uint32_t _dataLen;
 };
+
+#define CM_BASE		0x0000
+#define CM_LOGIN	(CM_BASE + 1)
+
+
+#define SM_BASE		0X1000
+#define SM_LOGIN	(SM_BASE + 1)
+
+struct TCM_BASE {
+};
+
+struct TCM_LOGIN : TCM_BASE {
+	char name[16];
+	char pwd[16];
+};
+
+struct TSM_LOGIN : TCM_BASE {
+};

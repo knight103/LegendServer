@@ -134,6 +134,7 @@ void on_new_connection(uv_stream_t *server_stream, int status) {
     }
     
 	log_verbose("client connected");
+	session->onInit();
 }
 
 void alloc_cb(uv_handle_t* handle,size_t suggested_size,uv_buf_t* buf) {

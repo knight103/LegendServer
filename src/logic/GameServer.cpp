@@ -1,6 +1,8 @@
 #include "GameServer.h"
 #include "GameClient.h"
 
+void write_cb(uv_write_t* req, int status);
+
 GameServer::GameServer(const char* ip, int port) {
 	_ip = ip;
 	_port = port;
@@ -8,5 +10,6 @@ GameServer::GameServer(const char* ip, int port) {
 }
 
 TCPClient* GameServer::newClient(uv_tcp_t* handle) {
-	return GameClient::create(handle);
+	GameClient* client = GameClient::create(handle);
+	return client;
 }

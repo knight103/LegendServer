@@ -45,9 +45,15 @@ public:
     void on_recv(const char* data, size_t readn);
 
 	virtual void on_data_read(const char* data, size_t size);
+
+	virtual void sendData(void* buf, size_t bufSize);
+
+	virtual void onInit();
+
 protected:
     TCPClient();
 	
+	void send(void* buf, size_t size);
 
 private:
     char* _buffer;
