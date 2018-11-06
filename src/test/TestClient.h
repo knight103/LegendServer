@@ -4,6 +4,8 @@
 #include <uv.h>
 #include "core/ProtocolDefine.h"
 
+class GameProtocol;
+
 class TestClient {
 public:
 	TestClient(uv_loop_t* loop);
@@ -21,6 +23,10 @@ public:
 	void on_recv(const char* data, size_t readn);
 
 	void on_data_read(const char* data, size_t size);
+
+	void onProtocol(GameProtocol* gp);
+
+	void protocolSend(uint32_t protoId, void* buf, size_t size);
 
 	uv_loop_t* _loop;
 	uv_tcp_t* _uv_handle;

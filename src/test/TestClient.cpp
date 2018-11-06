@@ -173,9 +173,37 @@ void TestClient::on_data_read(const char* data, size_t size) {
 		gp->data.resize(reader.getDataLen());
 		memcpy(&gp->data[0], pBody, reader.getDataLen());
 
+		onProtocol(gp);
+
+		delete gp;
+
 		pBody += reader.getDataLen();
 		curReadSize += reader.getDataLen();
 	}
 	return;
 }
 
+void TestClient::onProtocol(GameProtocol* gp) {
+	if (gp->protoId == SM_LOGIN) {
+		
+		TCM_LOGIN t;
+		strcpy(t.name, "zhuhui");
+		strcpy(t.pwd, "game66666");
+		protocolSend(CM_LOGIN, (void*)&t, sizeof(TCM_LOGIN));
+	}
+}
+
+void TestClient::protocolSend(uint32_t protoId, void* buf, size_t size) {
+
+	ProtocolSend ps;
+	ps._protoId = protoId;
+	ps._dataLen = 8 + size;
+
+	char* buffer = new char[ps._dataLen];
+	memset(buffer, 0, ps._dataLen);
+
+	memcpy(buffer, &ps, sizeof(ProtocolSend));
+	memcpy(buffer + sizeof(ProtocolSend), buf, size);
+
+	sendData((void*)buffer, ps._dataLen);
+}
